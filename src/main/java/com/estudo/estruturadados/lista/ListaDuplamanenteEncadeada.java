@@ -3,6 +3,7 @@ package com.estudo.estruturadados.lista;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
@@ -10,10 +11,11 @@ import java.util.function.Consumer;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.builder.ToStringStyle.JSON_STYLE;
 
-public class ListaDuplamanenteEncadeada<T> implements Iterable<T> {
+public class ListaDuplamanenteEncadeada<T> implements Iterable<T>, Navigable<T> {
     private No<T> inicio;
     private No<T> fim;
     private int quantidadeNos;
+    private ListaDuplamanenteEncadeadaIterator iterator;
 
     public void adicionarNoInicioDaLista(T elemento) {
         No<T> novoNo = new No<>(elemento);
@@ -60,21 +62,41 @@ public class ListaDuplamanenteEncadeada<T> implements Iterable<T> {
 
     @Override
     public void forEach(Consumer<? super T> action) {
-        new ListaDuplamanenteIterator<T>()
-                .forEachRemaining(action);
+        createIteratorWhenNecessary().forEachRemaining(action);
     }
 
     @Override
     public Iterator<T> iterator() {
-        return new ListaDuplamanenteIterator<T>();
+        return createIteratorWhenNecessary();
     }
 
     @Override
     public Spliterator<T> spliterator() {
-        return Spliterators.spliteratorUnknownSize(new ListaDuplamanenteIterator<>(), 0);
+        return Spliterators.spliterator(createIteratorWhenNecessary(), getSize(), Spliterator.SIZED);
     }
 
-    private class ListaDuplamanenteIterator<E> implements Iterator<E> {
+    @Override
+    public Optional<T> tryAdvance() {
+        var iterator = createIteratorWhenNecessary();
+        return Optional.ofNullable(iterator.hasNext() ? iterator.next() : null);
+    }
+
+    @Override
+    public Optional<T> tryPrevious() {
+        var iterator = createIteratorWhenNecessary();
+        return Optional.ofNullable(iterator.hasPrevious() ? iterator.previous() : null);
+    }
+
+    private ListaDuplamanenteEncadeadaIterator<T> createIteratorWhenNecessary() {
+
+        if (iterator == null) {
+            iterator = new ListaDuplamanenteEncadeadaIterator<>();
+        }
+
+        return iterator;
+    }
+
+    private class ListaDuplamanenteEncadeadaIterator<E> implements Iterator<E>, PreviousIterator<E> {
         private No<T> corrente;
 
         @Override
@@ -126,6 +148,27 @@ public class ListaDuplamanenteEncadeada<T> implements Iterable<T> {
             while (hasNext()) {
                 action.accept(next());
             }
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return ofNullable(corrente != null ? corrente : fim)
+                    .map(noCorrente -> noCorrente.getAnterior() != null)
+                    .orElse(false);
+        }
+
+        @Override
+        public E previous() {
+            if (corrente == null) {
+                corrente = fim;
+                return (E) corrente.getAnterior().getElemento();
+            }
+
+            return ofNullable(corrente)
+                    .map(noCorrente -> {
+                        corrente = noCorrente.getAnterior();
+                        return (E) corrente.getElemento();
+                    }).orElse(null);
         }
     }
 }
