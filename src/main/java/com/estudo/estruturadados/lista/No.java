@@ -4,7 +4,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.JSON_STYLE;
 
-public class No<T> {
+class No<T> {
     private T elemento;
     private No<T> anterior;
     private No<T> posterior;

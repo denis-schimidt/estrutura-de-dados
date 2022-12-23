@@ -1,6 +1,5 @@
-package com.estudo.estruturadados;
+package com.estudo.estruturadados.lista;
 
-import com.estudo.estruturadados.lista.ListaDuplamanenteEncadeada;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;

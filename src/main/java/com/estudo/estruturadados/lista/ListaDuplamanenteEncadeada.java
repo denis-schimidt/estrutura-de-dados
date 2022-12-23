@@ -62,32 +62,32 @@ public class ListaDuplamanenteEncadeada<T> implements Iterable<T>, Navigable<T> 
 
     @Override
     public void forEach(Consumer<? super T> action) {
-        createIteratorWhenNecessary().forEachRemaining(action);
+        getIterator().forEachRemaining(action);
     }
 
     @Override
     public Iterator<T> iterator() {
-        return createIteratorWhenNecessary();
+        return getIterator();
     }
 
     @Override
     public Spliterator<T> spliterator() {
-        return Spliterators.spliterator(createIteratorWhenNecessary(), getSize(), Spliterator.SIZED);
+        return Spliterators.spliterator(getIterator(), getSize(), Spliterator.SIZED);
     }
 
     @Override
     public Optional<T> tryAdvance() {
-        var iterator = createIteratorWhenNecessary();
+        var iterator = getIterator();
         return Optional.ofNullable(iterator.hasNext() ? iterator.next() : null);
     }
 
     @Override
     public Optional<T> tryPrevious() {
-        var iterator = createIteratorWhenNecessary();
+        var iterator = getIterator();
         return Optional.ofNullable(iterator.hasPrevious() ? iterator.previous() : null);
     }
 
-    private ListaDuplamanenteEncadeadaIterator<T> createIteratorWhenNecessary() {
+    private ListaDuplamanenteEncadeadaIterator<T> getIterator() {
 
         if (iterator == null) {
             iterator = new ListaDuplamanenteEncadeadaIterator<>();
@@ -98,16 +98,26 @@ public class ListaDuplamanenteEncadeada<T> implements Iterable<T>, Navigable<T> 
 
     private class ListaDuplamanenteEncadeadaIterator<E> implements Iterator<E>, PreviousIterator<E> {
         private No<T> corrente;
+        private boolean navegandoParaFrente = true;
 
         @Override
         public boolean hasNext() {
             return ofNullable(corrente != null ? corrente : inicio)
-                    .map(noCorrente -> noCorrente.getPosterior() != null)
+                    .map(noCorrente -> {
+
+                        if (quantidadeNos > 1) {
+                            return noCorrente.getPosterior() != null;
+                        }
+
+                        return noCorrente != null;
+                    })
                     .orElse(false);
         }
 
         @Override
         public E next() {
+            this.navegandoParaFrente = true;
+
             if (corrente == null) {
                 corrente = inicio;
                 return (E) corrente.getElemento();
@@ -123,7 +133,7 @@ public class ListaDuplamanenteEncadeada<T> implements Iterable<T>, Navigable<T> 
         @Override
         public void remove() {
             if (corrente == null) {
-                throw new IllegalStateException("É necessário utilizar o método next() antes de remover");
+                throw new IllegalStateException("É necessário utilizar ao menos uma vez o método next() ou previus() antes de remover");
             }
 
             No<T> anterior = corrente.getAnterior();
@@ -139,6 +149,7 @@ public class ListaDuplamanenteEncadeada<T> implements Iterable<T>, Navigable<T> 
             corrente = null;
 
             inicio = posterior;
+            // TODO Verificar remoção para trás
             quantidadeNos--;
         }
 
@@ -153,15 +164,23 @@ public class ListaDuplamanenteEncadeada<T> implements Iterable<T>, Navigable<T> 
         @Override
         public boolean hasPrevious() {
             return ofNullable(corrente != null ? corrente : fim)
-                    .map(noCorrente -> noCorrente.getAnterior() != null)
+                    .map(noCorrente -> {
+                        if (quantidadeNos > 1) {
+                            return noCorrente.getAnterior() != null;
+                        }
+
+                        return noCorrente != null;
+                    })
                     .orElse(false);
         }
 
         @Override
         public E previous() {
+            this.navegandoParaFrente = false;
+
             if (corrente == null) {
                 corrente = fim;
-                return (E) corrente.getAnterior().getElemento();
+                return (E) corrente.getElemento();
             }
 
             return ofNullable(corrente)
