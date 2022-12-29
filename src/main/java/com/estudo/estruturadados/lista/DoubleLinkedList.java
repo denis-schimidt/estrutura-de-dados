@@ -14,8 +14,8 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
     private int amountOfNodes;
     private DoubleLinkedListIterator iterator;
 
-    public void addToEndOfList(T element) {
-        Node<T> newNode = new Node<>(element);
+    public void addToEndOfList(T value) {
+        Node<T> newNode = new Node<>(value);
 
         if (finalNode == null) {
             this.finalNode = newNode;
@@ -29,8 +29,8 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
         amountOfNodes++;
     }
 
-    public void addToTopOfList(T element) {
-        Node<T> novoNode = new Node<>(element);
+    public void addToTopOfList(T value) {
+        Node<T> novoNode = new Node<>(value);
 
         if (inicialNode == null) {
             this.inicialNode = novoNode;
@@ -94,16 +94,16 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
     }
 
     public List<T> values() {
-        var elements = new ArrayList<T>();
+        var values = new ArrayList<T>();
 
         Node<T> nodeAtual = inicialNode;
 
         while (nodeAtual != null) {
-            elements.add(nodeAtual.getValue());
+            values.add(nodeAtual.getValue());
             nodeAtual = nodeAtual.getAfter();
         }
 
-        return elements;
+        return values;
     }
 
     private class DoubleLinkedListIterator<E> implements Iterator<E>, PreviousIterator<E> {
@@ -191,12 +191,12 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
         @Override
         public boolean hasPrevious() {
             return ofNullable(currentNode != null ? currentNode : finalNode)
-                    .map(nodeCorrente -> {
+                    .map(node -> {
                         if (amountOfNodes > 1) {
-                            return nodeCorrente.getBefore() != null;
+                            return node.getBefore() != null;
                         }
 
-                        return nodeCorrente != null;
+                        return node != null;
                     })
                     .orElse(false);
         }
