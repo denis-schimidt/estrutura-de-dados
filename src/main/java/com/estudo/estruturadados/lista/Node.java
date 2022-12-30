@@ -25,11 +25,11 @@ class Node<T> {
         return before;
     }
 
-    public void setBefore(Node<T> nodeExterno) {
-        this.before = nodeExterno;
+    public void setBefore(Node<T> otherNode) {
+        this.before = otherNode;
 
         if (this.before != null) {
-            this.before.after = this;
+            otherNode.after = this;
         }
     }
 
@@ -37,11 +37,11 @@ class Node<T> {
         return after;
     }
 
-    public void setAfter(Node<T> nodeExterno) {
-        this.after = nodeExterno;
+    public void setAfter(Node<T> otherNode) {
+        this.after = otherNode;
 
         if (this.after != null) {
-            this.after.before = this;
+            otherNode.before = this;
         }
     }
 

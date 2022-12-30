@@ -1,33 +1,44 @@
 package com.estudo.estruturadados.lista;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DoubleLinkedListTest {
 
-    @ParameterizedTest
-    @MethodSource("createDoubleLinkedList")
-    public void deveAdicionar4ItensNaFimDaListaERetornarTamanhoDaListaEValoresNaOrdemCorreta(DoubleLinkedList<Integer> list) {
-        assertEquals(4, list.getSize());
-        assertArrayEquals(new int[]{1, 3, 9, 15},
-            new int[]{
-                    list.tryAdvance().get(),
-                    list.tryAdvance().get(),
-                    list.tryAdvance().get(),
-                    list.tryAdvance().get()
-            });
+    private DoubleLinkedList<Integer> list;
+
+    @BeforeEach
+    public void setUp() {
+        list = new DoubleLinkedList<Integer>();
+        list.addToEndOfList(1);
+        list.addToEndOfList(3);
+        list.addToEndOfList(9);
+        list.addToEndOfList(15);
     }
 
     @Test
-    public void deveAdicionar4ItensNaInicioDaListaERetornarTamanhoDaListaEValoresNaOrdemCorreta() {
+    @DisplayName("Should add 4 items at the end of the list and return list size and values in the correct order")
+    public void shouldAdd4ItemsAtTheEndOfTheListAndReturnListSizeAndValuesInTheCorrectOrder() {
+
+        assertEquals(4, list.getSize());
+        assertArrayEquals(new Integer[]{1, 3, 9, 15},
+                new Integer[]{
+                        list.tryAdvance().get(),
+                        list.tryAdvance().get(),
+                        list.tryAdvance().get(),
+                        list.tryAdvance().get()
+                });
+    }
+
+    @Test
+    @DisplayName("Should add 4 items to the beginning of the list and return list size and values in the correct order")
+    public void shouldAdd4ItemsToTheBeginningOfTheListAndReturnListSizeAndValuesInTheCorrectOrder() {
         DoubleLinkedList<Integer> list = new DoubleLinkedList<>();
         list.addToTopOfList(1);
         list.addToTopOfList(3);
@@ -36,17 +47,17 @@ public class DoubleLinkedListTest {
 
         assertEquals(4, list.getSize());
         assertArrayEquals(new Integer[]{15, 9, 3, 1},
-            new Integer[]{
-                    list.tryAdvance().get(),
-                    list.tryAdvance().get(),
-                    list.tryAdvance().get(),
-                    list.tryAdvance().get()
-            });
+                new Integer[]{
+                        list.tryAdvance().get(),
+                        list.tryAdvance().get(),
+                        list.tryAdvance().get(),
+                        list.tryAdvance().get()
+                });
     }
 
-    @ParameterizedTest
-    @MethodSource("createDoubleLinkedList")
-    public void deveNavegarCorretamenteDoFimParaInicioDaLista(DoubleLinkedList<Integer> list) {
+    @Test
+    @DisplayName("Should navigate right from end to start list")
+    public void shouldNavigateRightFromEndToStartList() {
         assertArrayEquals(new int[]{15, 9, 3, 1},
                 new int[]{
                         list.tryPrevious().get(),
@@ -56,9 +67,9 @@ public class DoubleLinkedListTest {
                 });
     }
 
-    @ParameterizedTest
-    @MethodSource("createDoubleLinkedList")
-    public void deveRemoverTodosOsItensDaListaIterandoParaFrente(DoubleLinkedList<Integer> list) {
+    @Test
+    @DisplayName("Should remove all items in the list from the beginning to the end of the list")
+    public void shouldRemoveAllItemsInTheListFromTheBeginningToTheEndOfTheList() {
         Iterator<Integer> iterator = list.iterator();
 
         while (iterator.hasNext()) {
@@ -69,9 +80,9 @@ public class DoubleLinkedListTest {
         assertEquals(0, list.getSize());
     }
 
-    @ParameterizedTest
-    @MethodSource("createDoubleLinkedList")
-    public void deveRemoverTodosOsItensDaListaIterandoParaTras(DoubleLinkedList<Integer> list) {
+    @Test
+    @DisplayName("Should remove all items in the list from the end to the beginning of the list")
+    public void shouldRemoveAllItemsInTheListFromTheEndToTheBeginningOfTheList() {
         PreviousIterator<Integer> iterator = (PreviousIterator) list.iterator();
 
         while (iterator.hasPrevious()) {
@@ -82,9 +93,9 @@ public class DoubleLinkedListTest {
         assertEquals(0, list.getSize());
     }
 
-    @ParameterizedTest
-    @MethodSource("createDoubleLinkedList")
-    public void deveRemoverUmItemDoMeioDaListaParaFrente(DoubleLinkedList<Integer> list) {
+    @Test
+    @DisplayName("Should remove an item from middle list going forward")
+    public void shouldRemoveAnItemFromMiddleListGoingForward() {
         Iterator<Integer> iterator = list.iterator();
 
         while (iterator.hasNext()) {
@@ -98,9 +109,9 @@ public class DoubleLinkedListTest {
         assertEquals(3, list.getSize());
     }
 
-    @ParameterizedTest
-    @MethodSource("createDoubleLinkedList")
-    public void deveRemoverUmItemDoMeioDaListaParaTras(DoubleLinkedList<Integer> list) {
+    @Test
+    @DisplayName("Should remove am item from middle list going backwards")
+    public void shouldRemoveAmItemFromMiddleListGoingBackwards() {
         PreviousIterator<Integer> iterator = (PreviousIterator<Integer>) list.iterator();
 
         while (iterator.hasPrevious()) {
@@ -114,25 +125,63 @@ public class DoubleLinkedListTest {
         assertEquals(3, list.getSize());
     }
 
-    @ParameterizedTest
-    @MethodSource("createDoubleLinkedList")
-    public void deveRetornarTrueQuandoExisteUmValorNaLista(DoubleLinkedList<Integer> list) {
+    @Test
+    @DisplayName("Should return true when there is avalue in list")
+    public void shouldReturnTrueWhenThereIsAValueInList() {
         assertTrue(list.contains(9));
     }
 
-    @ParameterizedTest
-    @MethodSource("createDoubleLinkedList")
-    public void deveRetornarFalseQuandoNãoExisteUmValorNaLista(DoubleLinkedList<Integer> list) {
+    @Test
+    @DisplayName("Should return false when there is not avalue in list")
+    public void shouldReturnFalseWhenThereIsNotAValueInList() {
         assertFalse(list.contains(0));
     }
 
-    private static Stream<Arguments> createDoubleLinkedList() {
-        DoubleLinkedList doubleLinkedList = new DoubleLinkedList<Integer>();
-        doubleLinkedList.addToEndOfList(1);
-        doubleLinkedList.addToEndOfList(3);
-        doubleLinkedList.addToEndOfList(9);
-        doubleLinkedList.addToEndOfList(15);
+    @Test
+    @DisplayName("Should return the index when finding the value in list")
+    public void shouldReturnTheIndexWhenFindingTheValueInList() {
+        assertEquals(2, list.indexOf(9).get());
+    }
 
-        return Stream.of(Arguments.of(doubleLinkedList));
+    @Test
+    @DisplayName("Should return optional empty when not finding value in list")
+    public void shouldReturnOptionalEmptyWhenNotFindingValueInList() {
+        assertTrue(list.indexOf(20).isEmpty());
+    }
+
+    @Test
+    @DisplayName("Should throws illegal argument exception when index is less than zero")
+    public void shouldThrowsIllegalArgumentExceptionWhenIndexIsLessThanZero() {
+        assertThrows(IllegalArgumentException.class, () -> list.insertAt(-1, 10), "It's NOT possible insert element (10) at position -1");
+    }
+
+    @Test
+    @DisplayName("Should throw illegal argument exception when index is bigger than list size")
+    public void shouldThrowIllegalArgumentExceptionWhenIndexIsBiggerThanListSize() {
+        assertThrows(IllegalArgumentException.class, () -> list.insertAt(5, 10), "It's NOT possible insert element (10) at position 5");
+    }
+
+    @Test
+    @DisplayName("Should insert the value in index 2 of the list")
+    public void shouldInsertTheValueInIndex2OfTheList() {
+        assertTrue(list.insertAt(2, 500));
+        assertEquals(list.getSize(), 5);
+        assertIterableEquals(List.of(1, 3, 500, 9, 15), list.values());
+    }
+
+    @Test
+    @DisplayName("Should insert the value at the beginning of the list")
+    public void  shouldInsertTheValueAtTheBeginningOfTheList() {
+        assertTrue(list.insertAt(0, 500));
+        assertEquals(list.getSize(), 5);
+        assertIterableEquals(List.of(500, 1, 3, 9, 15), list.values());
+    }
+
+    @Test
+    @DisplayName("Should insert the value at list end")
+    public void shouldInsertTheValueAtListEnd() {
+        assertTrue(list.insertAt(list.getSize(), 500));
+        assertEquals(list.getSize(), 5);
+        assertIterableEquals(List.of(1, 3, 9, 15, 500), list.values());
     }
 }

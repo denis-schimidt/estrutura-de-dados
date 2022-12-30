@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import java.util.*;
 import java.util.function.Consumer;
 
+import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.builder.ToStringStyle.JSON_STYLE;
 
@@ -30,15 +31,61 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
     }
 
     public boolean contains(T value) {
+        return indexOf(value).isPresent();
+    }
+
+    public Optional<Integer> indexOf(T value) {
+        int index = 0;
         Node<T> nodeAtual = inicialNode;
 
         while (nodeAtual != null) {
 
-            if(nodeAtual.getValue().equals(value)) {
-                return true;
+            if (nodeAtual.getValue().equals(value)) {
+                return Optional.of(index);
             }
 
             nodeAtual = nodeAtual.getAfter();
+            index++;
+        }
+
+        return Optional.empty();
+    }
+
+    public boolean insertAt(int index, T value) {
+
+        if (index < 0 || index > amountOfNodes) {
+            throw new IllegalArgumentException(format("It's NOT possible insert element (%s) at position %d", value, index));
+        }
+
+        if (index == amountOfNodes) {
+            addToEndOfList(value);
+            return true;
+
+        } else if (index == 0) {
+            addToTopOfList(value);
+            return true;
+        }
+
+        return insertInMiddleOfTheList(index, value);
+    }
+
+    private boolean insertInMiddleOfTheList(int index, T value) {
+        int currentIndex = 0;
+        Node<T> currentNode = inicialNode;
+
+        while (currentNode != null) {
+
+            if (currentIndex == index) {
+                Node<T> newNode = new Node<>(value);
+                newNode.setBefore(currentNode.getBefore());
+                newNode.setAfter(currentNode);
+                amountOfNodes++;
+
+                return true;
+            }
+
+            currentNode = currentNode.getAfter();
+            currentIndex++;
         }
 
         return false;
