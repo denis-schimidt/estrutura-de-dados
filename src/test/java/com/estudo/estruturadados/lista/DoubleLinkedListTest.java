@@ -1,114 +1,91 @@
 package com.estudo.estruturadados.lista;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DoubleLinkedListTest {
 
-    private DoubleLinkedList<Integer> doubleLinkedList;
-
-    @BeforeEach
-    public void setUp() {
-        doubleLinkedList = new DoubleLinkedList();
-    }
-
-    @Test
-    public void deveAdicionar4ItensNaFimDaListaERetornarTamanhoDaListaEValoresNaOrdemCorreta() {
-        doubleLinkedList.addToTopOfList(1);
-        doubleLinkedList.addToTopOfList(3);
-        doubleLinkedList.addToTopOfList(9);
-        doubleLinkedList.addToTopOfList(15);
-
-        assertEquals(4, doubleLinkedList.getSize());
+    @ParameterizedTest
+    @MethodSource("createDoubleLinkedList")
+    public void deveAdicionar4ItensNaFimDaListaERetornarTamanhoDaListaEValoresNaOrdemCorreta(DoubleLinkedList<Integer> list) {
+        assertEquals(4, list.getSize());
         assertArrayEquals(new int[]{1, 3, 9, 15},
-                new int[]{
-                        doubleLinkedList.tryAdvance().get(),
-                        doubleLinkedList.tryAdvance().get(),
-                        doubleLinkedList.tryAdvance().get(),
-                        doubleLinkedList.tryAdvance().get()
-                });
+            new int[]{
+                    list.tryAdvance().get(),
+                    list.tryAdvance().get(),
+                    list.tryAdvance().get(),
+                    list.tryAdvance().get()
+            });
     }
 
     @Test
     public void deveAdicionar4ItensNaInicioDaListaERetornarTamanhoDaListaEValoresNaOrdemCorreta() {
-        doubleLinkedList.addToEndOfList(1);
-        doubleLinkedList.addToEndOfList(3);
-        doubleLinkedList.addToEndOfList(9);
-        doubleLinkedList.addToEndOfList(15);
+        DoubleLinkedList<Integer> list = new DoubleLinkedList<>();
+        list.addToTopOfList(1);
+        list.addToTopOfList(3);
+        list.addToTopOfList(9);
+        list.addToTopOfList(15);
 
-        assertEquals(4, doubleLinkedList.getSize());
+        assertEquals(4, list.getSize());
+        assertArrayEquals(new Integer[]{15, 9, 3, 1},
+            new Integer[]{
+                    list.tryAdvance().get(),
+                    list.tryAdvance().get(),
+                    list.tryAdvance().get(),
+                    list.tryAdvance().get()
+            });
+    }
+
+    @ParameterizedTest
+    @MethodSource("createDoubleLinkedList")
+    public void deveNavegarCorretamenteDoFimParaInicioDaLista(DoubleLinkedList<Integer> list) {
         assertArrayEquals(new int[]{15, 9, 3, 1},
                 new int[]{
-                        doubleLinkedList.tryAdvance().get(),
-                        doubleLinkedList.tryAdvance().get(),
-                        doubleLinkedList.tryAdvance().get(),
-                        doubleLinkedList.tryAdvance().get()
+                        list.tryPrevious().get(),
+                        list.tryPrevious().get(),
+                        list.tryPrevious().get(),
+                        list.tryPrevious().get()
                 });
     }
 
-    @Test
-    public void deveNavegarCorretamenteDoFimParaInicioDaLista() {
-        doubleLinkedList.addToTopOfList(1);
-        doubleLinkedList.addToTopOfList(3);
-        doubleLinkedList.addToTopOfList(9);
-        doubleLinkedList.addToTopOfList(15);
-
-        assertArrayEquals(new int[]{15, 9, 3, 1},
-                new int[]{
-                        doubleLinkedList.tryPrevious().get(),
-                        doubleLinkedList.tryPrevious().get(),
-                        doubleLinkedList.tryPrevious().get(),
-                        doubleLinkedList.tryPrevious().get()
-                });
-    }
-
-    @Test
-    public void deveRemoverTodosOsItensDaListaIterandoParaFrente() {
-        doubleLinkedList.addToTopOfList(1);
-        doubleLinkedList.addToTopOfList(3);
-        doubleLinkedList.addToTopOfList(9);
-        doubleLinkedList.addToTopOfList(15);
-
-        Iterator<Integer> iterator = doubleLinkedList.iterator();
+    @ParameterizedTest
+    @MethodSource("createDoubleLinkedList")
+    public void deveRemoverTodosOsItensDaListaIterandoParaFrente(DoubleLinkedList<Integer> list) {
+        Iterator<Integer> iterator = list.iterator();
 
         while (iterator.hasNext()) {
-            var elemento = iterator.next();
+            iterator.next();
             iterator.remove();
         }
 
-        assertEquals(0, doubleLinkedList.getSize());
+        assertEquals(0, list.getSize());
     }
 
-    @Test
-    public void deveRemoverTodosOsItensDaListaIterandoParaTras() {
-        doubleLinkedList.addToTopOfList(1);
-        doubleLinkedList.addToTopOfList(3);
-        doubleLinkedList.addToTopOfList(9);
-        doubleLinkedList.addToTopOfList(15);
-
-        PreviousIterator<Integer> iterator = (PreviousIterator) doubleLinkedList.iterator();
+    @ParameterizedTest
+    @MethodSource("createDoubleLinkedList")
+    public void deveRemoverTodosOsItensDaListaIterandoParaTras(DoubleLinkedList<Integer> list) {
+        PreviousIterator<Integer> iterator = (PreviousIterator) list.iterator();
 
         while (iterator.hasPrevious()) {
-            var elemento = iterator.previous();
+            iterator.previous();
             iterator.remove();
         }
 
-        assertEquals(0, doubleLinkedList.getSize());
+        assertEquals(0, list.getSize());
     }
 
-    @Test
-    public void deveRemoverUmItemDoMeioDaListaParaFrente() {
-        doubleLinkedList.addToTopOfList(1);
-        doubleLinkedList.addToTopOfList(3);
-        doubleLinkedList.addToTopOfList(9);
-        doubleLinkedList.addToTopOfList(15);
-
-        Iterator<Integer> iterator = doubleLinkedList.iterator();
+    @ParameterizedTest
+    @MethodSource("createDoubleLinkedList")
+    public void deveRemoverUmItemDoMeioDaListaParaFrente(DoubleLinkedList<Integer> list) {
+        Iterator<Integer> iterator = list.iterator();
 
         while (iterator.hasNext()) {
 
@@ -117,18 +94,14 @@ public class DoubleLinkedListTest {
             }
         }
 
-        assertIterableEquals(List.of(1, 3, 15), doubleLinkedList.values());
-        assertEquals(3, doubleLinkedList.getSize());
+        assertIterableEquals(List.of(1, 3, 15), list.values());
+        assertEquals(3, list.getSize());
     }
 
-    @Test
-    public void deveRemoverUmItemDoMeioDaListaParaTras() {
-        doubleLinkedList.addToTopOfList(1);
-        doubleLinkedList.addToTopOfList(3);
-        doubleLinkedList.addToTopOfList(9);
-        doubleLinkedList.addToTopOfList(15);
-
-        PreviousIterator<Integer> iterator = (PreviousIterator<Integer>) doubleLinkedList.iterator();
+    @ParameterizedTest
+    @MethodSource("createDoubleLinkedList")
+    public void deveRemoverUmItemDoMeioDaListaParaTras(DoubleLinkedList<Integer> list) {
+        PreviousIterator<Integer> iterator = (PreviousIterator<Integer>) list.iterator();
 
         while (iterator.hasPrevious()) {
 
@@ -137,7 +110,29 @@ public class DoubleLinkedListTest {
             }
         }
 
-        assertIterableEquals(List.of(1, 3, 15), doubleLinkedList.values());
-        assertEquals(3, doubleLinkedList.getSize());
+        assertIterableEquals(List.of(1, 3, 15), list.values());
+        assertEquals(3, list.getSize());
+    }
+
+    @ParameterizedTest
+    @MethodSource("createDoubleLinkedList")
+    public void deveRetornarTrueQuandoExisteUmValorNaLista(DoubleLinkedList<Integer> list) {
+        assertTrue(list.contains(9));
+    }
+
+    @ParameterizedTest
+    @MethodSource("createDoubleLinkedList")
+    public void deveRetornarFalseQuandoNãoExisteUmValorNaLista(DoubleLinkedList<Integer> list) {
+        assertFalse(list.contains(0));
+    }
+
+    private static Stream<Arguments> createDoubleLinkedList() {
+        DoubleLinkedList doubleLinkedList = new DoubleLinkedList<Integer>();
+        doubleLinkedList.addToEndOfList(1);
+        doubleLinkedList.addToEndOfList(3);
+        doubleLinkedList.addToEndOfList(9);
+        doubleLinkedList.addToEndOfList(15);
+
+        return Stream.of(Arguments.of(doubleLinkedList));
     }
 }

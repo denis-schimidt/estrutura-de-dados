@@ -14,7 +14,7 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
     private int amountOfNodes;
     private DoubleLinkedListIterator iterator;
 
-    public void addToEndOfList(T value) {
+    public void addToTopOfList(T value) {
         Node<T> newNode = new Node<>(value);
 
         if (finalNode == null) {
@@ -29,7 +29,22 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
         amountOfNodes++;
     }
 
-    public void addToTopOfList(T value) {
+    public boolean contains(T value) {
+        Node<T> nodeAtual = inicialNode;
+
+        while (nodeAtual != null) {
+
+            if(nodeAtual.getValue().equals(value)) {
+                return true;
+            }
+
+            nodeAtual = nodeAtual.getAfter();
+        }
+
+        return false;
+    }
+
+    public void addToEndOfList(T value) {
         Node<T> novoNode = new Node<>(value);
 
         if (inicialNode == null) {
