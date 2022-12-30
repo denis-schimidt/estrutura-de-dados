@@ -15,7 +15,7 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
     private int amountOfNodes;
     private DoubleLinkedListIterator iterator;
 
-    public void addToTopOfList(T value) {
+    public void insertAtBeginning(T value) {
         Node<T> newNode = new Node<>(value);
 
         if (finalNode == null) {
@@ -58,11 +58,11 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
         }
 
         if (index == amountOfNodes) {
-            addToEndOfList(value);
+            insertAtEnd(value);
             return true;
 
         } else if (index == 0) {
-            addToTopOfList(value);
+            insertAtBeginning(value);
             return true;
         }
 
@@ -91,7 +91,7 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
         return false;
     }
 
-    public void addToEndOfList(T value) {
+    public void insertAtEnd(T value) {
         Node<T> novoNode = new Node<>(value);
 
         if (inicialNode == null) {
@@ -175,15 +175,15 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
         @Override
         public boolean hasNext() {
             return ofNullable(currentNode != null ? currentNode : inicialNode)
-                    .map(nodeCorrente -> {
+                .map(nodeCorrente -> {
 
-                        if (amountOfNodes > 1) {
-                            return nodeCorrente.getAfter() != null;
-                        }
+                    if (amountOfNodes > 1) {
+                        return nodeCorrente.getAfter() != null;
+                    }
 
-                        return nodeCorrente != null;
-                    })
-                    .orElse(false);
+                    return nodeCorrente != null;
+                })
+                .orElse(false);
         }
 
         @Override
@@ -253,14 +253,14 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
         @Override
         public boolean hasPrevious() {
             return ofNullable(currentNode != null ? currentNode : finalNode)
-                    .map(node -> {
-                        if (amountOfNodes > 1) {
-                            return node.getBefore() != null;
-                        }
+                .map(node -> {
+                    if (amountOfNodes > 1) {
+                        return node.getBefore() != null;
+                    }
 
-                        return node != null;
-                    })
-                    .orElse(false);
+                    return node != null;
+                })
+                .orElse(false);
         }
 
         @Override

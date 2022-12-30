@@ -16,10 +16,10 @@ public class DoubleLinkedListTest {
     @BeforeEach
     public void setUp() {
         list = new DoubleLinkedList<Integer>();
-        list.addToEndOfList(1);
-        list.addToEndOfList(3);
-        list.addToEndOfList(9);
-        list.addToEndOfList(15);
+        list.insertAtEnd(1);
+        list.insertAtEnd(3);
+        list.insertAtEnd(9);
+        list.insertAtEnd(15);
     }
 
     @Test
@@ -40,10 +40,10 @@ public class DoubleLinkedListTest {
     @DisplayName("Should add 4 items to the beginning of the list and return list size and values in the correct order")
     public void shouldAdd4ItemsToTheBeginningOfTheListAndReturnListSizeAndValuesInTheCorrectOrder() {
         DoubleLinkedList<Integer> list = new DoubleLinkedList<>();
-        list.addToTopOfList(1);
-        list.addToTopOfList(3);
-        list.addToTopOfList(9);
-        list.addToTopOfList(15);
+        list.insertAtBeginning(1);
+        list.insertAtBeginning(3);
+        list.insertAtBeginning(9);
+        list.insertAtBeginning(15);
 
         assertEquals(4, list.getSize());
         assertArrayEquals(new Integer[]{15, 9, 3, 1},
