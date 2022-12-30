@@ -1,16 +1,13 @@
 package com.estudo.estruturadados.lista;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.*;
 import java.util.function.Consumer;
 
-import static java.lang.String.format;
-import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.builder.ToStringStyle.JSON_STYLE;
-
 public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
-    private Node<T> inicialNode;
+    private Node<T> initialNode;
     private Node<T> finalNode;
     private int amountOfNodes;
     private DoubleLinkedListIterator iterator;
@@ -22,11 +19,11 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
             this.finalNode = newNode;
         }
 
-        if (inicialNode != null) {
-            newNode.setAfter(this.inicialNode);
+        if (initialNode != null) {
+            newNode.setAfter(this.initialNode);
         }
 
-        this.inicialNode = newNode;
+        this.initialNode = newNode;
         amountOfNodes++;
     }
 
@@ -36,15 +33,15 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
 
     public Optional<Integer> indexOf(T value) {
         int index = 0;
-        Node<T> nodeAtual = inicialNode;
+        Node<T> currentNode = initialNode;
 
-        while (nodeAtual != null) {
+        while (currentNode != null) {
 
-            if (nodeAtual.getValue().equals(value)) {
+            if (currentNode.getValue().equals(value)) {
                 return Optional.of(index);
             }
 
-            nodeAtual = nodeAtual.getAfter();
+            currentNode = currentNode.getAfter();
             index++;
         }
 
@@ -54,7 +51,7 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
     public boolean insertAt(int index, T value) {
 
         if (index < 0 || index > amountOfNodes) {
-            throw new IllegalArgumentException(format("It's NOT possible insert element (%s) at position %d", value, index));
+            throw new IllegalArgumentException(String.format("It's NOT possible insert element (%s) at position %d", value, index));
         }
 
         if (index == amountOfNodes) {
@@ -71,7 +68,7 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
 
     private boolean insertInMiddleOfTheList(int index, T value) {
         int currentIndex = 0;
-        Node<T> currentNode = inicialNode;
+        Node<T> currentNode = initialNode;
 
         while (currentNode != null) {
 
@@ -94,8 +91,8 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
     public void insertAtEnd(T value) {
         Node<T> novoNode = new Node<>(value);
 
-        if (inicialNode == null) {
-            this.inicialNode = novoNode;
+        if (initialNode == null) {
+            this.initialNode = novoNode;
         }
 
         if (this.finalNode != null) {
@@ -112,8 +109,8 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, JSON_STYLE)
-                .append("inicialNode", inicialNode)
+        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
+                .append("initialNode", initialNode)
                 .append("finalNode", finalNode)
                 .append("amountOfNodes", amountOfNodes)
                 .toString();
@@ -146,10 +143,10 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
         return Optional.ofNullable(iterator.hasPrevious() ? iterator.previous() : null);
     }
 
-    private DoubleLinkedListIterator<T> getIterator() {
+    private DoubleLinkedListIterator getIterator() {
 
         if (iterator == null) {
-            iterator = new DoubleLinkedListIterator<>();
+            iterator = new DoubleLinkedListIterator();
         }
 
         return iterator;
@@ -158,47 +155,47 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
     public List<T> values() {
         var values = new ArrayList<T>();
 
-        Node<T> nodeAtual = inicialNode;
+        Node<T> currentNode = initialNode;
 
-        while (nodeAtual != null) {
-            values.add(nodeAtual.getValue());
-            nodeAtual = nodeAtual.getAfter();
+        while (currentNode != null) {
+            values.add(currentNode.getValue());
+            currentNode = currentNode.getAfter();
         }
 
         return values;
     }
 
-    private class DoubleLinkedListIterator<E> implements Iterator<E>, PreviousIterator<E> {
+    private class DoubleLinkedListIterator implements Iterator<T>, PreviousIterator<T> {
         private Node<T> currentNode;
         private boolean navigatingForward = true;
 
         @Override
         public boolean hasNext() {
-            return ofNullable(currentNode != null ? currentNode : inicialNode)
-                .map(nodeCorrente -> {
+            return Optional.ofNullable(currentNode != null ? currentNode : initialNode)
+                .map(node -> {
 
                     if (amountOfNodes > 1) {
-                        return nodeCorrente.getAfter() != null;
+                        return node.getAfter() != null;
                     }
 
-                    return nodeCorrente != null;
+                    return true;
                 })
                 .orElse(false);
         }
 
         @Override
-        public E next() {
+        public T next() {
             this.navigatingForward = true;
 
             if (currentNode == null) {
-                currentNode = inicialNode;
-                return (E) currentNode.getValue();
+                currentNode = initialNode;
+                return currentNode.getValue();
             }
 
-            return ofNullable(currentNode)
-                    .map(nodeCorrente -> {
-                        currentNode = nodeCorrente.getAfter();
-                        return (E) currentNode.getValue();
+            return Optional.of(currentNode)
+                    .map(node -> {
+                        currentNode = node.getAfter();
+                        return currentNode.getValue();
                     }).orElse(null);
         }
 
@@ -206,7 +203,7 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
         public void remove() {
 
             if (currentNode == null) {
-                throw new IllegalStateException("You must use the next() or previus() method at least once before removing");
+                throw new IllegalStateException("You must use the next() or previous() method at least once before removing");
             }
 
             Node<T> previousNode = currentNode.getBefore();
@@ -216,18 +213,18 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
                 previousNode.setAfter(posteriorNode);
             }
 
-            adjustInicialOrFinalReferenceWhenNecessary(previousNode, posteriorNode);
+            adjustInitialOrFinalReferenceWhenNecessary(previousNode, posteriorNode);
             resetCurrentElement();
 
             amountOfNodes--;
         }
 
-        private void adjustInicialOrFinalReferenceWhenNecessary(Node<T> previousNode, Node<T> posteriorNode) {
+        private void adjustInitialOrFinalReferenceWhenNecessary(Node<T> previousNode, Node<T> posteriorNode) {
 
             if (navigatingForward) {
 
-                if (inicialNode == currentNode) {
-                    inicialNode = posteriorNode;
+                if (initialNode == currentNode) {
+                    initialNode = posteriorNode;
                 }
 
             } else if (finalNode == currentNode) {
@@ -243,7 +240,7 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
         }
 
         @Override
-        public void forEachRemaining(Consumer<? super E> action) {
+        public void forEachRemaining(Consumer<? super T> action) {
 
             while (hasNext()) {
                 action.accept(next());
@@ -252,30 +249,30 @@ public class DoubleLinkedList<T> implements Iterable<T>, Navigable<T> {
 
         @Override
         public boolean hasPrevious() {
-            return ofNullable(currentNode != null ? currentNode : finalNode)
+            return Optional.ofNullable(currentNode != null ? currentNode : finalNode)
                 .map(node -> {
                     if (amountOfNodes > 1) {
                         return node.getBefore() != null;
                     }
 
-                    return node != null;
+                    return true;
                 })
                 .orElse(false);
         }
 
         @Override
-        public E previous() {
+        public T previous() {
             this.navigatingForward = false;
 
             if (currentNode == null) {
                 currentNode = finalNode;
-                return (E) currentNode.getValue();
+                return currentNode.getValue();
             }
 
-            return ofNullable(currentNode)
-                    .map(nodeCorrente -> {
-                        currentNode = nodeCorrente.getBefore();
-                        return (E) currentNode.getValue();
+            return Optional.of(currentNode)
+                    .map(node -> {
+                        currentNode = node.getBefore();
+                        return currentNode.getValue();
                     }).orElse(null);
         }
     }

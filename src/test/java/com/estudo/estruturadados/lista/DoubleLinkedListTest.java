@@ -1,5 +1,6 @@
 package com.estudo.estruturadados.lista;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -7,15 +8,13 @@ import org.junit.jupiter.api.Test;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class DoubleLinkedListTest {
 
     private DoubleLinkedList<Integer> list;
 
     @BeforeEach
     public void setUp() {
-        list = new DoubleLinkedList<Integer>();
+        list = new DoubleLinkedList<>();
         list.insertAtEnd(1);
         list.insertAtEnd(3);
         list.insertAtEnd(9);
@@ -26,8 +25,8 @@ public class DoubleLinkedListTest {
     @DisplayName("Should add 4 items at the end of the list and return list size and values in the correct order")
     public void shouldAdd4ItemsAtTheEndOfTheListAndReturnListSizeAndValuesInTheCorrectOrder() {
 
-        assertEquals(4, list.getSize());
-        assertArrayEquals(new Integer[]{1, 3, 9, 15},
+        Assertions.assertEquals(4, list.getSize());
+        Assertions.assertArrayEquals(new Integer[]{1, 3, 9, 15},
                 new Integer[]{
                         list.tryAdvance().get(),
                         list.tryAdvance().get(),
@@ -45,8 +44,8 @@ public class DoubleLinkedListTest {
         list.insertAtBeginning(9);
         list.insertAtBeginning(15);
 
-        assertEquals(4, list.getSize());
-        assertArrayEquals(new Integer[]{15, 9, 3, 1},
+        Assertions.assertEquals(4, list.getSize());
+        Assertions.assertArrayEquals(new Integer[]{15, 9, 3, 1},
                 new Integer[]{
                         list.tryAdvance().get(),
                         list.tryAdvance().get(),
@@ -58,7 +57,7 @@ public class DoubleLinkedListTest {
     @Test
     @DisplayName("Should navigate right from end to start list")
     public void shouldNavigateRightFromEndToStartList() {
-        assertArrayEquals(new int[]{15, 9, 3, 1},
+        Assertions.assertArrayEquals(new int[]{15, 9, 3, 1},
                 new int[]{
                         list.tryPrevious().get(),
                         list.tryPrevious().get(),
@@ -77,9 +76,10 @@ public class DoubleLinkedListTest {
             iterator.remove();
         }
 
-        assertEquals(0, list.getSize());
+        Assertions.assertEquals(0, list.getSize());
     }
 
+    @SuppressWarnings("rawtypes")
     @Test
     @DisplayName("Should remove all items in the list from the end to the beginning of the list")
     public void shouldRemoveAllItemsInTheListFromTheEndToTheBeginningOfTheList() {
@@ -90,7 +90,7 @@ public class DoubleLinkedListTest {
             iterator.remove();
         }
 
-        assertEquals(0, list.getSize());
+        Assertions.assertEquals(0, list.getSize());
     }
 
     @Test
@@ -105,8 +105,8 @@ public class DoubleLinkedListTest {
             }
         }
 
-        assertIterableEquals(List.of(1, 3, 15), list.values());
-        assertEquals(3, list.getSize());
+        Assertions.assertIterableEquals(List.of(1, 3, 15), list.values());
+        Assertions.assertEquals(3, list.getSize());
     }
 
     @Test
@@ -121,67 +121,67 @@ public class DoubleLinkedListTest {
             }
         }
 
-        assertIterableEquals(List.of(1, 3, 15), list.values());
-        assertEquals(3, list.getSize());
+        Assertions.assertIterableEquals(List.of(1, 3, 15), list.values());
+        Assertions.assertEquals(3, list.getSize());
     }
 
     @Test
     @DisplayName("Should return true when there is avalue in list")
     public void shouldReturnTrueWhenThereIsAValueInList() {
-        assertTrue(list.contains(9));
+        Assertions.assertTrue(list.contains(9));
     }
 
     @Test
     @DisplayName("Should return false when there is not avalue in list")
     public void shouldReturnFalseWhenThereIsNotAValueInList() {
-        assertFalse(list.contains(0));
+        Assertions.assertFalse(list.contains(0));
     }
 
     @Test
     @DisplayName("Should return the index when finding the value in list")
     public void shouldReturnTheIndexWhenFindingTheValueInList() {
-        assertEquals(2, list.indexOf(9).get());
+        Assertions.assertEquals(2, list.indexOf(9).get());
     }
 
     @Test
     @DisplayName("Should return optional empty when not finding value in list")
     public void shouldReturnOptionalEmptyWhenNotFindingValueInList() {
-        assertTrue(list.indexOf(20).isEmpty());
+        Assertions.assertTrue(list.indexOf(20).isEmpty());
     }
 
     @Test
     @DisplayName("Should throws illegal argument exception when index is less than zero")
     public void shouldThrowsIllegalArgumentExceptionWhenIndexIsLessThanZero() {
-        assertThrows(IllegalArgumentException.class, () -> list.insertAt(-1, 10), "It's NOT possible insert element (10) at position -1");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> list.insertAt(-1, 10), "It's NOT possible insert element (10) at position -1");
     }
 
     @Test
     @DisplayName("Should throw illegal argument exception when index is bigger than list size")
     public void shouldThrowIllegalArgumentExceptionWhenIndexIsBiggerThanListSize() {
-        assertThrows(IllegalArgumentException.class, () -> list.insertAt(5, 10), "It's NOT possible insert element (10) at position 5");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> list.insertAt(5, 10), "It's NOT possible insert element (10) at position 5");
     }
 
     @Test
     @DisplayName("Should insert the value in index 2 of the list")
     public void shouldInsertTheValueInIndex2OfTheList() {
-        assertTrue(list.insertAt(2, 500));
-        assertEquals(list.getSize(), 5);
-        assertIterableEquals(List.of(1, 3, 500, 9, 15), list.values());
+        Assertions.assertTrue(list.insertAt(2, 500));
+        Assertions.assertEquals(list.getSize(), 5);
+        Assertions.assertIterableEquals(List.of(1, 3, 500, 9, 15), list.values());
     }
 
     @Test
     @DisplayName("Should insert the value at the beginning of the list")
     public void  shouldInsertTheValueAtTheBeginningOfTheList() {
-        assertTrue(list.insertAt(0, 500));
-        assertEquals(list.getSize(), 5);
-        assertIterableEquals(List.of(500, 1, 3, 9, 15), list.values());
+        Assertions.assertTrue(list.insertAt(0, 500));
+        Assertions.assertEquals(list.getSize(), 5);
+        Assertions.assertIterableEquals(List.of(500, 1, 3, 9, 15), list.values());
     }
 
     @Test
     @DisplayName("Should insert the value at list end")
     public void shouldInsertTheValueAtListEnd() {
-        assertTrue(list.insertAt(list.getSize(), 500));
-        assertEquals(list.getSize(), 5);
-        assertIterableEquals(List.of(1, 3, 9, 15, 500), list.values());
+        Assertions.assertTrue(list.insertAt(list.getSize(), 500));
+        Assertions.assertEquals(list.getSize(), 5);
+        Assertions.assertIterableEquals(List.of(1, 3, 9, 15, 500), list.values());
     }
 }
