@@ -28,10 +28,10 @@ public class DoubleLinkedListTest {
         Assertions.assertEquals(4, list.getSize());
         Assertions.assertArrayEquals(new Integer[]{1, 3, 9, 15},
                 new Integer[]{
-                        list.tryAdvance().get(),
-                        list.tryAdvance().get(),
-                        list.tryAdvance().get(),
-                        list.tryAdvance().get()
+                        list.tryAdvance().orElseThrow(),
+                        list.tryAdvance().orElseThrow(),
+                        list.tryAdvance().orElseThrow(),
+                        list.tryAdvance().orElseThrow()
                 });
     }
 
@@ -47,10 +47,10 @@ public class DoubleLinkedListTest {
         Assertions.assertEquals(4, list.getSize());
         Assertions.assertArrayEquals(new Integer[]{15, 9, 3, 1},
                 new Integer[]{
-                        list.tryAdvance().get(),
-                        list.tryAdvance().get(),
-                        list.tryAdvance().get(),
-                        list.tryAdvance().get()
+                        list.tryAdvance().orElseThrow(),
+                        list.tryAdvance().orElseThrow(),
+                        list.tryAdvance().orElseThrow(),
+                        list.tryAdvance().orElseThrow()
                 });
     }
 
@@ -59,10 +59,10 @@ public class DoubleLinkedListTest {
     public void shouldNavigateRightFromEndToStartList() {
         Assertions.assertArrayEquals(new int[]{15, 9, 3, 1},
                 new int[]{
-                        list.tryPrevious().get(),
-                        list.tryPrevious().get(),
-                        list.tryPrevious().get(),
-                        list.tryPrevious().get()
+                        list.tryPrevious().orElseThrow(),
+                        list.tryPrevious().orElseThrow(),
+                        list.tryPrevious().orElseThrow(),
+                        list.tryPrevious().orElseThrow()
                 });
     }
 
@@ -83,7 +83,7 @@ public class DoubleLinkedListTest {
     @Test
     @DisplayName("Should remove all items in the list from the end to the beginning of the list")
     public void shouldRemoveAllItemsInTheListFromTheEndToTheBeginningOfTheList() {
-        PreviousIterator<Integer> iterator = (PreviousIterator) list.iterator();
+        var iterator = (PreviousIterator) list.iterator();
 
         while (iterator.hasPrevious()) {
             iterator.previous();
@@ -112,7 +112,7 @@ public class DoubleLinkedListTest {
     @Test
     @DisplayName("Should remove am item from middle list going backwards")
     public void shouldRemoveAmItemFromMiddleListGoingBackwards() {
-        PreviousIterator<Integer> iterator = (PreviousIterator<Integer>) list.iterator();
+        var iterator = (PreviousIterator<Integer>) list.iterator();
 
         while (iterator.hasPrevious()) {
 
@@ -126,13 +126,13 @@ public class DoubleLinkedListTest {
     }
 
     @Test
-    @DisplayName("Should return true when there is avalue in list")
+    @DisplayName("Should return true when there is value in list")
     public void shouldReturnTrueWhenThereIsAValueInList() {
         Assertions.assertTrue(list.contains(9));
     }
 
     @Test
-    @DisplayName("Should return false when there is not avalue in list")
+    @DisplayName("Should return false when there is not value in list")
     public void shouldReturnFalseWhenThereIsNotAValueInList() {
         Assertions.assertFalse(list.contains(0));
     }
@@ -140,7 +140,7 @@ public class DoubleLinkedListTest {
     @Test
     @DisplayName("Should return the index when finding the value in list")
     public void shouldReturnTheIndexWhenFindingTheValueInList() {
-        Assertions.assertEquals(2, list.indexOf(9).get());
+        Assertions.assertEquals(2, list.indexOf(9).orElseThrow());
     }
 
     @Test
