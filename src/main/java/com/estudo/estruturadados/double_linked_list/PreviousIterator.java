@@ -1,4 +1,4 @@
-package com.estudo.estruturadados.lista;
+package com.estudo.estruturadados.double_linked_list;
 
 interface PreviousIterator<T> {
 
